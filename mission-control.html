@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mission Control CSS Arcade Cabinet">
+
+  <title>Mission Control · CSS Arcade</title>
+
+  <!--
+    Activity 05 · CSS Arcade Night · Round 3 Build
+    Team Name:Jeremy Henry & CO
+    Members / IDs: JEREMY HENRY 002737524
+    Theme: Mission Control
+  -->
+
+  <style>
+
+    /* =========================================
+       CHECKPOINT 6 · CUSTOM PROPERTIES
+       ========================================= */
+
+    :root {
+      --bg: #050816;
+      --surface: #10182b;
+      --surface-light: #18243d;
+      --ink: #f8fafc;
+      --cyan: #22d3ee;
+      --green: #4ade80;
+      --orange: #fb923c;
+      --radius: 14px;
+      --space: 1rem;
+      --glow: 0 0 18px rgba(34, 211, 238, 0.4);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    /* =========================================
+       CHECKPOINT 1 · FLEXBOX
+       ========================================= */
+
+    .cabinet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space);
+
+      padding: 1.25rem 2rem;
+      background: var(--surface);
+      border-bottom: 2px solid var(--cyan);
+    }
+
+    .logo {
+      color: var(--cyan);
+      text-shadow: 0 0 12px var(--cyan);
+    }
+
+    .cabinet-nav {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .cabinet-nav a {
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .cabinet-nav a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 0 var(--cyan);
+    }
+
+    .cabinet-nav a:focus-visible {
+      outline: 2px solid var(--cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 0 var(--cyan);
+    }
+
+    main {
+      width: min(1100px, 92%);
+      margin: auto;
+    }
+
+    section {
+      padding: 3rem 0;
+    }
+
+    section h2 {
+      margin-bottom: 1.5rem;
+      color: var(--cyan);
+    }
+
+    /* =========================================
+       CHECKPOINT 2 · CSS GRID
+       ========================================= */
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space);
+    }
+
+    .tile {
+      background: var(--surface);
+      border: 1px solid #263650;
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      min-height: 130px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .tile strong {
+      color: var(--green);
+      font-size: 1.4rem;
+      margin-top: 0.5rem;
+    }
+
+    /* =========================================
+       CHECKPOINT 3 · KEYFRAME ANIMATION
+       ========================================= */
+
+    .marquee-text {
+      animation-name: missionPulse;
+      animation-duration: 2s;
+      animation-timing-function: ease-in-out;
+      animation-delay: 0.5s;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes missionPulse {
+
+      0% {
+        transform: translateX(-30px);
+        color: var(--orange);
+      }
+
+      50% {
+        transform: translateX(15px) scale(1.05);
+        color: var(--cyan);
+      }
+
+      100% {
+        transform: translateX(0);
+        color: var(--green);
+      }
+    }
+
+    /* =========================================
+       CHECKPOINT 4 · POSITION + Z-INDEX
+       ========================================= */
+
+    .layer-stack {
+      position: relative;
+      min-height: 360px;
+      overflow: hidden;
+
+      background: linear-gradient(#081226, #10182b);
+
+      border: 2px solid var(--cyan);
+      border-radius: var(--radius);
+    }
+
+    .layer {
+      position: absolute;
+    }
+
+    /* Smoke: back */
+    .layer-back {
+      z-index: 1;
+
+      width: 130px;
+      height: 70px;
+
+      left: 50%;
+      bottom: 25px;
+
+      transform: translateX(-50%);
+
+      background: #94a3b8;
+      border-radius: 50%;
+      opacity: 0.45;
+
+      box-shadow:
+        -45px 10px 0 #64748b,
+        45px 10px 0 #64748b;
+    }
+
+    /* Rocket: middle */
+    .layer-mid {
+      z-index: 5;
+
+      left: 50%;
+      bottom: 65px;
+
+      transform: translateX(-50%);
+
+      font-size: 7rem;
+      line-height: 1;
+
+      animation: rocketLaunch 4s ease-in-out 1s forwards;
+    }
+
+    @keyframes rocketLaunch {
+
+      0% {
+        transform: translate(-50%, 0);
+      }
+
+      50% {
+        transform: translate(-50%, -80px);
+      }
+
+      100% {
+        transform: translate(-50%, -190px);
+      }
+    }
+
+    /* HUD: front */
+    .layer-front {
+      z-index: 10;
+
+      top: 20px;
+      right: 20px;
+
+      padding: 0.8rem 1rem;
+
+      border: 1px solid var(--green);
+      border-radius: 8px;
+
+      background: rgba(5, 8, 22, 0.85);
+
+      color: var(--green);
+      font-family: monospace;
+    }
+
+    .launchpad {
+      position: absolute;
+      z-index: 3;
+
+      left: 50%;
+      bottom: 30px;
+
+      transform: translateX(-50%);
+
+      width: 220px;
+      height: 15px;
+
+      background: #475569;
+      border-radius: 5px;
+    }
+
+    /* =========================================
+       CHECKPOINT 5 · MICRO-INTERACTION
+       ========================================= */
+
+    .tile:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--glow);
+    }
+
+    .tile:focus-visible {
+      outline: 3px solid var(--cyan);
+      transform: translateY(-8px);
+      box-shadow: var(--glow);
+    }
+
+    .score-list {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.5rem 1.5rem 3rem;
+    }
+
+    .score-list li {
+      padding: 0.5rem;
+      color: var(--green);
+    }
+
+    .cabinet-footer {
+      margin-top: 2rem;
+      padding: 1.5rem;
+
+      text-align: center;
+
+      background: var(--surface);
+      color: #94a3b8;
+    }
+
+    /* =========================================
+       CHECKPOINT 6 · RESPONSIVE
+       ========================================= */
+
+    @media (max-width: 768px) {
+
+      .cabinet-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .cabinet-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .layer-stack {
+        min-height: 320px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <header class="cabinet-header">
+
+    <h1 class="logo">🚀 Mission Control</h1>
+
+    <nav class="cabinet-nav" aria-label="Cabinet">
+      <a href="#play">Telemetry</a>
+      <a href="#scores">Mission Log</a>
+      <a href="#launch">Launch</a>
+    </nav>
+
+  </header>
+
+  <main>
+
+    <section id="play" aria-labelledby="play-title">
+
+      <h2 id="play-title" class="marquee-text">
+        SYSTEM READY · LAUNCH SEQUENCE ACTIVE
+      </h2>
+
+      <div class="game-grid">
+
+        <div class="tile" tabindex="0">
+          <span>Altitude</span>
+          <strong>12,450 km</strong>
+        </div>
+
+        <div class="tile" tabindex="0">
+          <span>Velocity</span>
+          <strong>27,400 km/h</strong>
+        </div>
+
+        <div class="tile" tabindex="0">
+          <span>Fuel</span>
+          <strong>92%</strong>
+        </div>
+
+        <div class="tile" tabindex="0">
+          <span>Cabin Pressure</span>
+          <strong>NORMAL</strong>
+        </div>
+
+        <div class="tile" tabindex="0">
+          <span>Navigation</span>
+          <strong>LOCKED</strong>
+        </div>
+
+        <div class="tile" tabindex="0">
+          <span>Oxygen</span>
+          <strong>98%</strong>
+        </div>
+
+        <div class="tile" tabindex="0">
+          <span>Engine</span>
+          <strong>READY</strong>
+        </div>
+
+        <div class="tile" tabindex="0">
+          <span>Orbit</span>
+          <strong>STABLE</strong>
+        </div>
+
+        <div class="tile" tabindex="0">
+          <span>Mission Status</span>
+          <strong>GO</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section id="scores" aria-labelledby="scores-title">
+
+      <h2 id="scores-title">📡 Mission Log</h2>
+
+      <ol class="score-list">
+        <li>T-10 · Guidance systems online</li>
+        <li>T-05 · Engines armed</li>
+        <li>T-00 · Liftoff confirmed</li>
+      </ol>
+
+    </section>
+
+    <section id="launch" aria-labelledby="launch-title">
+
+      <h2 id="launch-title">🚀 Launch Bay</h2>
+
+      <div class="layer-stack">
+
+        <div
+          class="layer layer-back"
+          aria-hidden="true">
+        </div>
+
+        <div
+          class="launchpad"
+          aria-hidden="true">
+        </div>
+
+        <div
+          class="layer layer-mid"
+          aria-label="Rocket">
+          🚀
+        </div>
+
+        <div class="layer layer-front">
+          ALT: RISING<br>
+          FUEL: 92%<br>
+          STATUS: GO
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="cabinet-footer">
+    <p>
+      &copy; 2026 JEREMY HENRY & CO. · Activity 05 · Mission Control
+    </p>
+  </footer>
+
+</body>
+</html>
